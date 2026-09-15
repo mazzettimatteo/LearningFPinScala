@@ -1,5 +1,5 @@
 
-object MyModule{
+object Mymodule{
 
     def factorial(n: Int): Int ={
         @annotation.tailrec

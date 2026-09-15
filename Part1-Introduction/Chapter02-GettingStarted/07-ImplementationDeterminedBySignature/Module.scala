@@ -2,7 +2,7 @@
 Es 2.3, 2.4 Esiste una sola implementazione valida per una segnatura parametrica di currye, quale? E per uncurry? 
 Es 2.7 Anche per compose l'implementazione è completamente determinata dalla firma della funzione.
 */
-object Module{
+object MazzoModule{
 
     def curry[A,B,C](f: (A,B)=>C ): A=>(B=>C) ={
         //(a: A) => ( (b: B) => f(a,b) )        
@@ -16,11 +16,11 @@ object Module{
     }
 
     def uncurry[A,B,C](f: A=>(B=>C) ): (A,B)=>C ={ //Nota che A=>(B=>C) per l'associatività dx di => è uguale ad A=>B=>C
-        (a: A, b: B)=>f(a,b)
+        (a: A, b: B)=>f(a)(b)
     }
 
 
-    def compose[A,B,C](f: B=>C, g A=>B): A=>C ={
+    def compose[A,B,C](f: B=>C, g: A=>B): A=>C ={
         (a: A)=>f(g(a))
         /*
         Compose è così utilizzata nel FP che è un metodo della classe delle funzioni:
