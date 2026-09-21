@@ -108,4 +108,38 @@ object List{
         foldRight(alist, Nil: List[B])((h,t)=>Cons(f(h),t))
     }
 
+    //Es 3.19, scrivi filter che rimuove da una lista tutti gli elem che non soddisfano un certo predicato.
+    def filter[A](l: List[A])(f: A=>Boolean): List[A] =l match{
+        case Nil => Nil
+        case Cons(head, tail) =>{
+            if(f(head)) Cons(head,filter(tail)(f))
+            else filter(tail)(f)
+        } 
+    }
+    def filter_1[A](l:List[A])(f: A=>Boolean): List[A] =
+        foldRight(l,Nil: List[A])((h,t)=>{if f(h) then Cons(h,t) else t})
+    
+    //Es 3.20, scrivi flatmap che funziona come map ma la funz in input ritorna una lista invece che un risultato.
+    //Eg: flatMap(List(1,2,3))(i=>List(i,i)) results in List(1,1,2,2,3,3)
+    def flatMap[A,B](l:List[A])(f: A=>List[B]): List[B] =l match{
+        case Nil => Nil
+        case Cons(head, tail) => append(f(head), flatMap(tail)(f))
+    }
+    def flatMap_2[A,B](l:List[A])(f: A=>List[B]): List[B] ={
+        foldRight(l,Nil)((h,t)=>append(f(h),t))
+    }
+    def flatMap_3[A,B](l:List[A])(f: A=>List[B]): List[B] =
+        concat(map(l)(f))
+
+    //Es 3.21, usa flatMap per implementare filter
+    def filter_2[A](l:List[A])(f: A=>Boolean): List[A] =
+        flatMap(l)(x=>{if f(x) then List(x) else Nil})
+
+    //Es 3.22, scrivi una funz che accetti due liste e ne costruisca una nuova sommando gli elementi corrispondenti di ciascuna lista
+    // addTogether(List(1,2,3), List(4,5,6)) results in List(5,7,9)
+    def addTogether(l1: List[Int], l2: List[Int]):List[Int] =(l1,l2) match{
+        case (Nil,_) => Nil
+        case (_,Nil) => Nil
+        case (Cons(h1,t1),Cons(h2,t2)) => Cons(h1+h2,addTogether(t1,t2)) 
+    }
 }
