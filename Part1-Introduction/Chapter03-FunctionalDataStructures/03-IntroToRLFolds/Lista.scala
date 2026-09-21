@@ -67,10 +67,45 @@ object List{
     def reverse_2[A](alist: List[A]): List[A] =
         foldLeft(alist, List[A]())((stuff,head)=>Cons(head,stuff))
     
+    
     //Es 3.13 Implementa foldLeft usando foldRight. Implementa foldRight usando foldLeft.
-    //def foldLeft_usingFR[A,B](alist: List[A], baseVal: B)(f: (B,A)=>B):B= 
-        
+    //def foldLeft_usingFR[A,B](alist: List[A], baseVal: B)(f: (B,A)=>B):B=     
     def foldRight_usingFL[A,B](alist: List[A], baseVal: B)(f: (A,B)=>B): B = 
         foldLeft(reverse_2(alist),baseVal)((b,a)=>f(a,b))
+
+    //Es 3.14 implementa append usando Fold
+    def append_2[A](l1: List[A], l2: List[A]): List[A] =
+        foldRight(l1,l2)(Cons(_,_))
+
+    //Es 3.15 implementa concat che concatena una lista di liste in una singola lista. Usa le funzioni introdotte sopra
+    def concat[A](ll: List[List[A]]): List[A] =ll match{
+        case Nil => Nil
+        case Cons(hList, tListList) => append(hList, concat(tListList)) 
+    }
+    def concat_2[A](ll:List[List[A]]): List[A] =
+        foldRight(ll, Nil: List[A]) (append)
+
+    //Es 3.16, scrivi una funzione che trasforma una lista di interi aggiungendo 1 ad ogni elem. 
+    //La funzione deve essere pure e ritornare una nuova lista
+    def add1(l: List[Int]): List[Int] = l match{
+        case Nil => Nil
+        case Cons(head, tail) => append(List(head+1),add1(tail))
+    }
+    def add1_1(l: List[Int]): List[Int] = l match{
+        case Nil => Nil
+        case Cons(head, tail) => Cons(head+1,add1_1(tail))
+    }
+    def add1_2(l: List[Int]): List[Int] =
+        foldRight(l,Nil:List[Int])((h,acc)=>Cons(h+1,acc))
+
+    //Es 3.17, scrivi una funzione che trasforma una List[Double] in una List[String]
+    //Usa val.toString per trasformare un val in testo
+    def doubToStr(l: List[Double]): List[String] =
+        foldRight(l,Nil: List[String])((h,acc)=>Cons(h.toString, acc)) 
+    
+    //Es 3.18, scrivi map che generalizzi la modifica di ogni elem di una lista mantenendone la struttura
+    def map[A,B](alist: List[A])(f: A=>B): List[B] ={
+        foldRight(alist, Nil: List[B])((h,t)=>Cons(f(h),t))
+    }
 
 }
