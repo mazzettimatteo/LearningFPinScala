@@ -36,3 +36,11 @@ object List{ //Companion Object, contiene funzioni per lavorare sulle liste
         println(sum(iList))
     }
 }
+
+/*
+NB:
+in questo caso stiamo definendo noi una struttura List, ma in realtà questa esiste già in scala e ha queste differenze:
+- Cons(h,tail) è in realtà h::tail, dove :: è associativo a dx e quindi si può scrivere h::k::tail al posto di Cons(h,Cons(k,tail))
+- h::tail è zucchero sintattico per h.::(tail)
+- esistono tante funzioni già esistenti per List con specifiche nella documentazione ufficiale
+*/

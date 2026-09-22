@@ -1,4 +1,5 @@
 //package kebab.datastructures
+import javax.net.ssl.TrustManager
 
 sealed trait List[+A]
 case object Nil extends List[Nothing]
@@ -141,5 +142,31 @@ object List{
         case (Nil,_) => Nil
         case (_,Nil) => Nil
         case (Cons(h1,t1),Cons(h2,t2)) => Cons(h1+h2,addTogether(t1,t2)) 
+    }
+
+    //Es 3.23, generalizza la funzione in modo che valga per qualsiasi tipo
+    def zipWith[A](l1: List[A], l2: List[A])(f:(A,A)=>A): List[A] =(l1,l2) match{
+        case (Nil,_)=>Nil
+        case (_,Nil)=>Nil
+        case(Cons(h1,t1), Cons(h2,t2))=>Cons(f(h1,h2),zipWith(t1,t2)(f))
+    }
+
+    //Es 3.24, implementa hasSubsequence che controlla se l1 ha come sottolista l2
+    @annotation.tailrec
+    def helper[A](l1: List[A], l2: List[A]): Boolean =(l1,l2) match{
+        case (Nil,Nil)=>true
+        case (Nil,_)=>false
+        case (_,Nil)=>true
+        case(Cons(h1,t1), Cons(h2,t2))=>{if (h1==h2) then helper(t1,t2) else false}
+        
+    }
+    def hasSubsequence[A](l1: List[A], l2: List[A]): Boolean =(l1,l2) match{
+        case (_,Nil) => true
+        case (Nil,_) => false
+        case (Cons(h1,t1), Cons(h2,t2)) => {
+            if ((h1==h2) && helper(t1,t2)) true
+            else hasSubsequence(t1,l2)
+        }
+
     }
 }
