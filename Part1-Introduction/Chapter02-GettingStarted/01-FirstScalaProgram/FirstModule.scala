@@ -11,7 +11,7 @@ scala> MyModule.abs(-89)
 scala> :exit
 */
 
-object MyModule{ //Il nome del file e quello dell'oggetto non devono coincidere per forza, come in questo caso
+object MyFirstEverModule{ //Il nome del file e quello dell'oggetto non devono coincidere per forza, come in questo caso
     def abs(n: Int): Int = //Non servono le graffe perchè il corpo della funzione contiene un solo statement
         if(n<0) -n
         else n
