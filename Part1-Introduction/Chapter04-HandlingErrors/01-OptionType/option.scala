@@ -1,5 +1,7 @@
+package fpinscala.errhandlingopt
+
 sealed trait Option[+A]{
-    //Es 4.1, implementa le seguenti funzioni
+    //Es 4.1, implementa le seguenti funzioni: map, flatMap, getOrElse, orElse, filter
     //Map può essere usata per trasformare un risultato dentro un Option
     def map[B](f: A=>B): Option[B] = this match{
         case None => None
@@ -37,6 +39,42 @@ object Option{
     def sigmaSquared(s: Seq[Double]): Option[Double] ={
         mean(s).flatMap(mediaDiSeq=> mean(s.map(value=>math.pow(value-mediaDiSeq, 2))))
     }
+
+    //Lift serve a trasformare ogni funzione che abbiamo in mod che possa operare su tipi Option
+    def lift[A,B](f: A=>B): Option[A] =>Option[B] =
+        _.map(f)
+    //Ad esempio se vogliamo fare l'absolute val di un option usiamo lift per scrivere absolute
+    val absolute: Option[Double]=>Option[Double] = lift(math.abs)
+
+    //Try è una funzione usata per trasformare le API da exception-based a Option-based
+    def Try[A](a: =>A): Option[A] =
+        try Some(a)
+        catch{ case e: Exception => None}
+
+    //Es 4.3, scrivi map2 che combina due Option usando una funzione binaria f.
+    def map2[A,B,C](oa: Option[A], ob: Option[B])(f:(A,B)=>C): Option[C]= (oa,ob) match{
+        case (None,_) => None
+        case (_, None) => None
+        case (Some(a), Some(b)) =>Some(f(a,b))
+    }
+    def map2_2[A,B,C](oa: Option[A], ob: Option[B])(f:(A,B)=>C): Option[C] =
+        oa.flatMap(a=>ob.map(b=>f(a,b)))
+
+    //Es 4.4, scrivi sequence che combina una lsit di Option  in una Option contenente la lista di tutti i Some
+    //Se la lista originale contienealmeno un None ritorna None.
+    def sequence[A](l: List[Option[A]]): Option[List[A]] =l match{
+        case Nil => Some(Nil)
+        case oh::ot => oh.flatMap( h =>sequence(ot).map(t=> h::t))
+    }
+    //Es 4.5, implementa traverse e poi implementa sequence usando traverse
+    def traverse[A,B](al: List[A])(f: A=>Option[B]): Option[List[B]] = al match{
+        case Nil => Some(Nil)
+        case h::tail => map2(f(h),traverse(tail)(f))(_::_)
+    }
+    def sequence_2[A](l: List[Option[A]]): Option[List[A]] =
+        traverse(l)(x=>x)
+
+
 }
 
 
