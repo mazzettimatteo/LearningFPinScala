@@ -42,4 +42,25 @@ object Either{
     def Try[A](a: =>A): Either[Exception,A] =
         try Right(a)
         catch{case e: Exception => Left(e)}
+
+    //Es 4.7, scrivi sequence e traverse che ritornano il primo errore incontrato se ce n'è uno
+    def sequence[E,A](es: List[Either[E,A]]): Either[E,List[A]] = es match{
+        case head :: next => {
+            head match{
+                case Left(value) => Left(value)
+                case Right(value) => sequence(next)
+            }
+        }
+        case Nil => Right(Nil)
+    }
+    def sequence_2[E,A](es: List[Either[E,A]]): Either[E,List[A]] ={
+        es.foldRight(Right(Nil): Either[E,List[A]]){
+            (curr: Either[E,A], acc: Either[E, List[A]])=>curr.map2(acc)((a,lista)=>a::lista)
+        }
+    }
+    def traverse[E,A,B](as: List[A])(f: A=>Either[E,B]): Either[E,List[B]] ={
+        as.foldRight(Right(Nil): Either[E,List[B]]){
+            (curr: A, acc: Either[E, List[B]])=>f(curr).map2(acc)((b, lista)=>b::lista)
+        } 
+    }
 }
